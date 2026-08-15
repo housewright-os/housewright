@@ -1,0 +1,72 @@
+{
+  "_comment": "Household OS config (non-budget). budget.json holds money targets; this file holds house-ops, energy, and family-calendar settings. Copy to config/household.json and edit; the real file is gitignored.",
+  "version": 1,
+  "updated": "2026-01-01",
+  "timezone": "",
+  "_tz_note": "IANA zone for all lanes (e.g. America/Chicago). Empty: the system timezone is used.",
+  "meal_plan_dir": "",
+  "_meal_note": "Directory containing meal_plan_*.md files (### numbered dinner headings). Empty: the briefs just omit the dinner line.",
+  "brief": {
+    "morning_task_count": 3,
+    "_note": "How many open tasks the morning message shows."
+  },
+  "family_events": {
+    "account": "you@gmail.com",
+    "calendar_id": "",
+    "_calendar_note": "Target calendar for auto-filed family events. If your Google account has a family group, the built-in Family calendar is ideal: it is auto-shared with every member. Find ids with: gog -a you@gmail.com calendar calendars -p. Empty: the scanner runs propose-only (confirm tasks, no calendar writes).",
+    "query": "in:inbox category:primary newer_than:3d",
+    "deny_from": [
+      "calendar-notification@google.com",
+      "linkedin.com",
+      "indeed.com",
+      "glassdoor.com",
+      "substack.com",
+      "medium.com",
+      "youtube.com",
+      "x.com",
+      "twitter.com",
+      "facebookmail.com",
+      "patreon.com"
+    ],
+    "_deny_note": "Excluded in the Gmail query itself (-from:). calendar-notification@google.com is load-bearing: without it the scanner would re-ingest its own calendar invite notifications.",
+    "max_per_run": 15,
+    "_max_note": "Cap on new messages scanned per 30-min run. Bounds the LLM extraction calls; anything past the cap is picked up next run."
+  },
+  "energy": {
+    "rate_per_kwh": 0.3,
+    "_rate_note": "Your blended residential rate, used only for rough cost lines. Refine from an actual bill.",
+    "peak": {
+      "start_hour": 16,
+      "end_hour": 21,
+      "nudge_watts": 500,
+      "_note": "Time-of-use peak window. A shiftable plug drawing over nudge_watts in that window gets one Telegram nudge per day. Nothing is ever switched automatically."
+    },
+    "plugs": [
+      {
+        "name": "plug-a",
+        "ip": "192.0.2.10",
+        "mac": "AABBCCDDEE01",
+        "model": "Shelly Plug US Gen4",
+        "role": "unassigned"
+      },
+      {
+        "name": "plug-b",
+        "ip": "192.0.2.11",
+        "mac": "AABBCCDDEE02",
+        "model": "Shelly Plug US Gen4",
+        "role": "unassigned"
+      }
+    ],
+    "_roles": "unassigned = log only. freezer = power-loss alerts that bypass quiet hours. shiftable = peak-window nudges. monitor = log only, never alerts. Rename the plugs to what they feed when assigning roles. The example IPs are RFC 5737 documentation addresses; use your plugs' real LAN IPs."
+  },
+  "bot_name": "",
+  "_bot_note": "Name the bot uses when greeting approved chats. Empty: a generic greeting.",
+  "serve": {
+    "bind": "127.0.0.1",
+    "_note": "Dashboard bind address. 127.0.0.1 = this machine only (default); 0.0.0.0 = LAN/VPN exposure, opt-in and unauthenticated, never expose to the internet."
+  },
+  "money": {
+    "client_dir": "",
+    "_note": "Directory of a finance-source client module providing secure_session (see scripts/pull.py docstring for the contract). Empty: the money lane is skipped cleanly and the briefs omit the money block."
+  }
+}

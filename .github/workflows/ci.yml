@@ -1,0 +1,34 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Compile every script
+        run: python -m py_compile scripts/*.py
+      - name: Validate example configs
+        run: |
+          python - <<'EOF'
+          import json
+          json.load(open("config/budget.example.json"))
+          json.load(open("config/household.example.json"))
+          print("example configs valid")
+          EOF
+      - name: Lint (error-class rules)
+        run: |
+          pip install --quiet ruff
+          ruff check --select F,E9 scripts
+      - name: Shell syntax
+        run: bash -n scripts/install-schedule.sh
+      - name: No real config or state tracked
+        run: |
+          ! git ls-files | grep -E '^(config/(budget|household)\.json|data/|state/)' || (echo "real config/state tracked!" && exit 1)
