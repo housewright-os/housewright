@@ -1,0 +1,138 @@
+{
+  "_comment": "Household budget targets. Edited by the household's humans together, not by an agent acting alone. Dollar figures are monthly unless noted. Copy to config/budget.json and edit; the real file is gitignored.",
+  "version": 1,
+  "updated": "2026-01-01",
+  "income": {
+    "cadence": "biweekly",
+    "period_days": 14,
+    "last_known_payday": "2026-01-02",
+    "typical_paycheck": 2500.0,
+    "source": "Employer name as it appears on the paycheck transaction",
+    "_note": "Placeholders throughout: set your real cadence, amount, and a recent payday so the engine can project the next one."
+  },
+  "accounts": {
+    "spending_account_hint": "Checking 0000",
+    "_note": "The engine finds this by name match. Safe-to-Spend is computed against this balance only.",
+    "exclude_from_household": [
+      "College Fund",
+      "Side Business"
+    ],
+    "_exclude_note": "Matched by name substring, never counted in reachable money or runway. Use this to keep separate-purpose accounts out of the household number."
+  },
+  "fixed_monthly": {
+    "_comment": "Contractual. The engine subtracts any of these still due before the next payday. All values here are placeholders: replace with your real bills.",
+    "Rent or mortgage": {
+      "amount": 2000.0,
+      "day_of_month": 1,
+      "merchant": "your lender or landlord"
+    },
+    "Electric": {
+      "amount": 200.0,
+      "day_of_month": 5,
+      "merchant": "your utility"
+    },
+    "Internet": {
+      "amount": 80.0,
+      "day_of_month": 5,
+      "merchant": "your ISP"
+    },
+    "Water and garbage": {
+      "amount": 100.0,
+      "day_of_month": 15,
+      "merchant": "city services"
+    },
+    "Insurance": {
+      "amount": 150.0,
+      "day_of_month": 20,
+      "merchant": "insurance"
+    },
+    "Phone": {
+      "amount": 60.0,
+      "day_of_month": 20,
+      "merchant": "phone"
+    }
+  },
+  "essentials_monthly": {
+    "_comment": "Real needs. The engine reserves the unspent remainder of these for the rest of the period, so Safe-to-Spend never eats the grocery money.",
+    "Groceries": 1200.0,
+    "Gas": 300.0,
+    "Medical": 100.0
+  },
+  "transfer_overrides": {
+    "_comment": "Zelle/transfer payments that are really spending, matched by substring against the transaction's plaidName or merchant. Without these, payments to people are invisible. Example: a house cleaner paid by Zelle.",
+    "EXAMPLE CLEANER NAME": "discretionary:House cleaning"
+  },
+  "discretionary_monthly": {
+    "_comment": "What Safe-to-Spend is drawn from. Spending here is a choice.",
+    "House cleaning": 0.0,
+    "Shopping": 200.0,
+    "Restaurants & Bars": 150.0,
+    "Entertainment & Recreation": 50.0,
+    "Fitness": 50.0,
+    "Miscellaneous": 100.0,
+    "Subscriptions": 50.0,
+    "Child Activities": 100.0,
+    "Everything else": 150.0
+  },
+  "category_map": {
+    "_comment": "Finance-source category name -> which bucket it counts against.",
+    "Groceries": "essentials:Groceries",
+    "Gas": "essentials:Gas",
+    "Medical": "essentials:Medical",
+    "Mortgage": "fixed",
+    "Rent": "fixed",
+    "Gas & Electric": "fixed",
+    "Internet & Cable": "fixed",
+    "Garbage": "fixed",
+    "Insurance": "fixed",
+    "Phone": "fixed",
+    "Financial Fees": "fixed",
+    "Taxes": "fixed",
+    "Auto Payment": "fixed",
+    "Shopping": "discretionary:Shopping",
+    "Restaurants & Bars": "discretionary:Restaurants & Bars",
+    "Coffee Shops": "discretionary:Restaurants & Bars",
+    "Entertainment & Recreation": "discretionary:Entertainment & Recreation",
+    "Fitness": "discretionary:Fitness",
+    "Miscellaneous": "discretionary:Miscellaneous",
+    "Child Activities": "discretionary:Child Activities",
+    "Personal": "discretionary:Everything else",
+    "Clothing": "discretionary:Everything else",
+    "Pets": "discretionary:Everything else",
+    "Travel & Vacation": "discretionary:Everything else",
+    "Parking & Tolls": "discretionary:Everything else",
+    "Gifts": "discretionary:Everything else",
+    "Charity": "discretionary:Everything else",
+    "Education": "discretionary:Everything else",
+    "Home Improvement": "discretionary:Everything else",
+    "Taxi & Ride Shares": "discretionary:Everything else",
+    "Cash & ATM": "discretionary:Everything else",
+    "Auto Maintenance": "discretionary:Everything else",
+    "Financial & Legal Services": "discretionary:Everything else",
+    "Uncategorized": "discretionary:Everything else"
+  },
+  "ignore_categories": [
+    "Transfer",
+    "Credit Card Payment",
+    "Paychecks",
+    "Other Income",
+    "Investments",
+    "Buy",
+    "Sell"
+  ],
+  "thresholds": {
+    "_comment": "Drives the green/amber/red status on the dashboard and the morning message.",
+    "green_above": 400.0,
+    "amber_above": 0.0
+  },
+  "notify": {
+    "telegram_chat_ids": [],
+    "_note": "Message your bot once, then add your numeric chat id here. One id per household member who should get the briefs."
+  },
+  "alerts": {
+    "_comment": "Push alerts between quiet hours. Sent by scripts/alerts.py via the watch job.",
+    "large_charge_threshold": 100.0,
+    "quiet_start_hour": 21,
+    "quiet_end_hour": 7
+  }
+}
